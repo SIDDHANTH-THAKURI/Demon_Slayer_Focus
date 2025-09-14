@@ -7,8 +7,22 @@ interface RingProps {
 }
 
 const Ring: React.FC<RingProps> = ({ remainingTime, initialMinutes, status }) => {
-  // Placeholder for ring logic and SVG rendering
-  const progress = (remainingTime / (initialMinutes * 60 * 1000)) * 100;
+  const totalTime = initialMinutes * 60 * 1000;
+  const progress = remainingTime / totalTime;
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference * (1 - progress);
+
+  let color = 'text-green-400';
+  if (progress < 0.5) color = 'text-yellow-400';
+  if (progress < 0.25) color = 'text-red-500';
+  if (status === 'failed') color = 'text-bad';
+  if (status === 'done') color = 'text-good';
+
+  const seconds = Math.ceil(remainingTime / 1000);
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  const display = `${mins}:${secs.toString().padStart(2, '0')}`;
 
   return (
     <div className="relative w-32 h-32 rounded-full flex items-center justify-center">
@@ -18,25 +32,25 @@ const Ring: React.FC<RingProps> = ({ remainingTime, initialMinutes, status }) =>
           strokeWidth="10"
           stroke="currentColor"
           fill="transparent"
-          r="40"
+          r={radius}
           cx="50"
           cy="50"
         />
         <circle
-          className="text-accent"
+          className={`${color}`}
           strokeWidth="10"
-          strokeDasharray={`${progress}, 100`}
-          strokeDashoffset="0"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           stroke="currentColor"
           fill="transparent"
-          r="40"
+          r={radius}
           cx="50"
           cy="50"
         />
       </svg>
       <div className="absolute text-xl font-bold">
-        {Math.ceil(remainingTime / 1000)}
+        {display}
       </div>
     </div>
   );

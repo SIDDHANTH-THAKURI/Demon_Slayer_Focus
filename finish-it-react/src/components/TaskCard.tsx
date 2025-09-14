@@ -4,17 +4,17 @@ import Ring from './Ring';
 
 interface TaskCardProps {
   task: Task;
+  onStart: (id: string) => void;
   onDone: (id: string, victoryNote: string) => void;
   onGiveUp: (id: string) => void;
   onTogglePause: (id: string) => void;
   isActive: boolean;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onDone, onGiveUp, onTogglePause, isActive }) => {
-  const [victoryNote, setVictoryNote] = React.useState('');
-
+const TaskCard: React.FC<TaskCardProps> = ({ task, onStart, onDone, onGiveUp, onTogglePause, isActive }) => {
   const handleDone = () => {
-    onDone(task.id, victoryNote);
+    const note = window.prompt('Victory note?') || '';
+    onDone(task.id, note);
   };
 
   return (
@@ -27,38 +27,38 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onDone, onGiveUp, onTogglePau
           status={task.status}
         />
         <div className="flex flex-col space-y-2">
-          {task.status === 'active' && (
+          {task.status === 'pending' && (
             <button
-              onClick={() => onTogglePause(task.id)}
-              className="bg-accent2 hover:bg-accent focus:ring-accent2 text-white px-4 py-2 rounded-lg"
+              onClick={() => onStart(task.id)}
+              className="bg-accent hover:bg-accent2 focus:ring-accent text-[#061022] px-4 py-2 rounded-lg"
             >
-              {task.paused ? 'Resume' : 'Pause'}
+              Start
             </button>
           )}
           {task.status === 'active' && (
-            <button
-              onClick={handleDone}
-              className="bg-good hover:bg-green-600 focus:ring-good text-white px-4 py-2 rounded-lg"
-            >
-              Done ✅
-            </button>
+            <>
+              <button
+                onClick={() => onTogglePause(task.id)}
+                className="bg-accent2 hover:bg-accent focus:ring-accent2 text-white px-4 py-2 rounded-lg"
+              >
+                {task.paused ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                onClick={handleDone}
+                className="bg-good hover:bg-green-600 focus:ring-good text-white px-4 py-2 rounded-lg"
+              >
+                Done ✅
+              </button>
+              <button
+                onClick={() => onGiveUp(task.id)}
+                className="bg-bad hover:bg-red-600 focus:ring-bad text-white px-4 py-2 rounded-lg"
+              >
+                Give Up 😵
+              </button>
+            </>
           )}
-          {task.status === 'active' && (
-            <button
-              onClick={() => onGiveUp(task.id)}
-              className="bg-bad hover:bg-red-600 focus:ring-bad text-white px-4 py-2 rounded-lg"
-            >
-              Give Up 😵
-            </button>
-          )}
-          {task.status === 'done' && (
-            <input
-              type="text"
-              placeholder="Victory note..."
-              value={victoryNote}
-              onChange={(e) => setVictoryNote(e.target.value)}
-              className="mt-2 p-2 rounded-lg bg-gray-700 text-ink"
-            />
+          {task.status === 'done' && task.victoryNote && (
+            <p className="mt-2 text-good">{task.victoryNote}</p>
           )}
         </div>
       </div>

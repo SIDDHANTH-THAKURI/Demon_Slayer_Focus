@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Task } from './types';
 import TaskCard from './components/TaskCard';
 // import Ring from './components/Ring'; // Will be used within TaskCard
@@ -13,13 +13,9 @@ const App: React.FC = () => {
   const [focusMode, setFocusMode] = useState<boolean>(false);
   const [chaosMode, setChaosMode] = useState<boolean>(false);
   const [audioOn, setAudioOn] = useState<boolean>(false);
-  const [mercy, setMercy] = useState<number>(0.5); // 0 to 1
-  const [stakes, setStakes] = useState<number>(0.5); // 0 to 1
-  const [controlsLocked, setControlsLocked] = useState<boolean>(false);
 
   const nextTaskId = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
-  const intervalRef = useRef<number | null>(null);
   const lastTickTimeRef = useRef<number>(Date.now());
 
   // Placeholder for confetti activation
@@ -29,7 +25,7 @@ const App: React.FC = () => {
   }, []);
 
   // --- Core Task Management Functions ---
-  const addTask = () => {
+  const addTask = useCallback(() => {
     if (titleInput.trim() === '' || isNaN(parseInt(minutesInput))) return;
 
     const newId = `task-${nextTaskId.current++}`;
@@ -47,41 +43,16 @@ const App: React.FC = () => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setTitleInput('');
     setMinutesInput('25');
-  };
+  }, [titleInput, minutesInput]);
 
-  const startTask = (id: string) => {
-    setActiveId(id);
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, status: 'active', paused: false } : task
-      )
-    );
-    lastTickTimeRef.current = Date.now();
-    startTimer();
-  };
-
-  const togglePause = (id: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, paused: !task.paused } : task
-      )
-    );
-  };
-
-  const completeTask = (id: string, victoryNote: string = '') => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, status: 'done', paused: true, victoryNote } : task
-      )
-    );
-    if (confettiRef.current) {
-      confettiRef.current(window.innerWidth / 2, window.innerHeight / 2); // Trigger confetti in the center
+  const stopTimer = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
-    setActiveId(null);
-    stopTimer();
-  };
+  }, []);
 
-  const giveUpTask = (id: string) => {
+  const giveUpTask = useCallback((id: string) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === id ? { ...task, status: 'failed', paused: true } : task
@@ -90,9 +61,9 @@ const App: React.FC = () => {
     setActiveId(null);
     stopTimer();
     // Implement blur/penalty here later
-  };
+  }, [stopTimer]);
 
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = useCallback(() => {
     const now = Date.now();
     const delta = now - lastTickTimeRef.current;
     lastTickTimeRef.current = now;
@@ -102,8 +73,7 @@ const App: React.FC = () => {
         if (task.id === activeTaskId && task.status === 'active' && !task.paused) {
           const newRemainingTime = Math.max(0, task.remainingTime - delta);
           if (newRemainingTime === 0) {
-            // Task failed
-            giveUpTask(task.id); // Use giveUpTask for failure
+            giveUpTask(task.id);
             return { ...task, remainingTime: 0, status: 'failed', paused: true };
           }
           return { ...task, remainingTime: newRemainingTime };
@@ -112,21 +82,46 @@ const App: React.FC = () => {
       })
     );
     animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-  };
+  }, [activeTaskId, giveUpTask]);
 
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
     animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-  };
+  }, [handleTimeUpdate]);
 
-  const stopTimer = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
+  const startTask = useCallback((id: string) => {
+    setActiveId(id);
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, status: 'active', paused: false } : task
+      )
+    );
+    lastTickTimeRef.current = Date.now();
+    startTimer();
+  }, [startTimer]);
+
+  const togglePause = useCallback((id: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, paused: !task.paused } : task
+      )
+    );
+  }, []);
+
+  const completeTask = useCallback((id: string, victoryNote: string = '') => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, status: 'done', paused: true, victoryNote } : task
+      )
+    );
+    if (confettiRef.current) {
+      confettiRef.current(window.innerWidth / 2, window.innerHeight / 2);
     }
-  };
+    setActiveId(null);
+    stopTimer();
+  }, [stopTimer]);
 
   const resetSession = () => {
     stopTimer();
@@ -153,7 +148,7 @@ const App: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [activeTaskId, titleInput, minutesInput]); // Dependencies for keyboard shortcuts
+  }, [activeTaskId, titleInput, minutesInput, addTask, togglePause, completeTask, giveUpTask]);
 
   // Page Visibility API (Distraction Meter - placeholder)
   useEffect(() => {
@@ -169,6 +164,16 @@ const App: React.FC = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [activeTaskId, tasks]);
+
+  // Allow exiting focus mode with ESC
+  useEffect(() => {
+    if (!focusMode) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFocusMode(false);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [focusMode]);
 
   // Audio control (placeholder)
   // useEffect(() => {
@@ -223,6 +228,7 @@ const App: React.FC = () => {
             <TaskCard
               key={task.id}
               task={task}
+              onStart={startTask}
               onDone={completeTask}
               onGiveUp={giveUpTask}
               onTogglePause={togglePause}
@@ -286,6 +292,7 @@ const App: React.FC = () => {
             <TaskCard
               key={task.id}
               task={task}
+              onStart={startTask}
               onDone={completeTask}
               onGiveUp={giveUpTask}
               onTogglePause={togglePause}
