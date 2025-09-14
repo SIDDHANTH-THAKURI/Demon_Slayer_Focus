@@ -156,9 +156,8 @@ const App: React.FC = () => {
   }, [activeTaskId, titleInput, minutesInput, addTask, togglePause, completeTask, giveUpTask, focusMode]);
 
   const completedTasks = tasks.filter(t => t.status === 'done').length;
-  const activeTasks = tasks.filter(t => t.status === 'active').length;
-  const pendingTasks = tasks.filter(t => t.status === 'pending').length;
-  const failedTasks = tasks.filter(t => t.status === 'failed').length;
+    const activeTasks = tasks.filter(t => t.status === 'active').length;
+    const failedTasks = tasks.filter(t => t.status === 'failed').length;
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -174,22 +173,22 @@ const App: React.FC = () => {
       <div className="relative z-10 min-h-screen p-6">
 
         {/* Floating Header */}
-        <div className="max-w-7xl mx-auto mb-12">
-          <div className="glass-soft rounded-3xl p-8 fade-in-up">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
-                style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)' }}>
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+          <div className="max-w-7xl mx-auto mb-12">
+            <div className="glass-soft rounded-3xl p-8 fade-in-up">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
+                  style={{ background: 'linear-gradient(135deg, #ff9a9e, #fecfef)' }}>
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+                  TaskTimer Zen
+                </h1>
+                <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+                  A vibrant space to track and celebrate your progress
+                </p>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                Flow Focus
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Beautiful productivity in perfect harmony
-              </p>
-            </div>
 
             {/* Task Creation */}
             <div className="max-w-4xl mx-auto">
