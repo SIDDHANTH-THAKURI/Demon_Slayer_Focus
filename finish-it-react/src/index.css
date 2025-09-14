@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
-/* Beautiful Soft Bright Theme */
+/* Demon Slayer Inspired Theme */
 :root {
-  --gradient-primary: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-  --gradient-soft: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-  --gradient-warm: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-  --gradient-cool: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-  --gradient-purple: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
-  --gradient-blue: linear-gradient(135deg, #a0c0ff 0%, #90f7ec 100%);
+  --gradient-primary: linear-gradient(135deg, #16a34a 0%, #1e293b 100%);
+  --gradient-soft: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+  --gradient-warm: linear-gradient(135deg, #fbbf24 0%, #f87171 100%);
+  --gradient-cool: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+  --gradient-purple: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%);
+  --gradient-blue: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
 }
 
 @theme {
-  --color-bg: #fafbff;
-  --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: #f8fafc;
-  --color-ink: #2d3748;
-  --color-muted: #718096;
-  --color-accent: #667eea;
-  --color-accent2: #764ba2;
-  --color-accent3: #89f7fe;
-  --color-good: #48bb78;
-  --color-bad: #f56565;
-  --color-warning: #ed8936;
-  --color-soft-pink: #fed6e3;
-  --color-soft-blue: #a8edea;
-  --color-soft-purple: #d299c2;
-  --color-soft-yellow: #fef9d7;
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-ink: #e2e8f0;
+  --color-muted: #94a3b8;
+  --color-accent: #16a34a;
+  --color-accent2: #dc2626;
+  --color-accent3: #3b82f6;
+  --color-good: #16a34a;
+  --color-bad: #dc2626;
+  --color-warning: #fbbf24;
+  --color-soft-pink: #fecdd3;
+  --color-soft-blue: #bfdbfe;
+  --color-soft-purple: #c4b5fd;
+  --color-soft-yellow: #fef9c3;
 }
 
 * {
@@ -41,8 +41,13 @@ body,
 
 body {
   margin: 0;
-  background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
-  color: #2d3748;
+  background-color: #000;
+  background-image:
+    linear-gradient(45deg, #16a34a 25%, transparent 25%, transparent 75%, #16a34a 75%),
+    linear-gradient(45deg, #16a34a 25%, transparent 25%, transparent 75%, #16a34a 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  color: #e2e8f0;
   overflow-x: hidden;
 }
 
@@ -69,7 +74,7 @@ body {
 .orb-1 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(255, 154, 158, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.25), transparent 70%);
   top: -10%;
   left: -10%;
   animation-delay: 0s;
@@ -78,7 +83,7 @@ body {
 .orb-2 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(255, 183, 178, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.25), transparent 70%);
   top: 20%;
   right: -5%;
   animation-delay: -7s;
@@ -87,7 +92,7 @@ body {
 .orb-3 {
   width: 250px;
   height: 250px;
-  background: radial-gradient(circle, rgba(255, 218, 185, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25), transparent 70%);
   bottom: 10%;
   left: 20%;
   animation-delay: -14s;
@@ -96,7 +101,7 @@ body {
 .orb-4 {
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(241, 158, 194, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.25), transparent 70%);
   bottom: -10%;
   right: 10%;
   animation-delay: -21s;
@@ -185,36 +190,36 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #16a34a, #1e293b);
   color: white;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(22, 163, 74, 0.4);
 }
 
 .btn-success {
-  background: linear-gradient(135deg, #48bb78, #38a169);
+  background: linear-gradient(135deg, #fbbf24, #f87171);
   color: white;
-  box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);
+  box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
 }
 
 .btn-success:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(72, 187, 120, 0.4);
+  box-shadow: 0 15px 40px rgba(251, 191, 36, 0.4);
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #f56565, #e53e3e);
+  background: linear-gradient(135deg, #4b5563, #1f2937);
   color: white;
-  box-shadow: 0 10px 30px rgba(245, 101, 101, 0.3);
+  box-shadow: 0 10px 30px rgba(55, 65, 81, 0.3);
 }
 
 .btn-danger:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(245, 101, 101, 0.4);
+  box-shadow: 0 15px 40px rgba(55, 65, 81, 0.4);
 }
 
 .btn-soft-secondary {

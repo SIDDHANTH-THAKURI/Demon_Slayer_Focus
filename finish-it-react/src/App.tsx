@@ -97,12 +97,21 @@ const App: React.FC = () => {
   }, [startTimer]);
 
   const togglePause = useCallback((id: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, paused: !task.paused } : task
-      )
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    const newPaused = !task.paused;
+    setTasks(prev =>
+      prev.map(t => (t.id === id ? { ...t, paused: newPaused } : t))
     );
-  }, []);
+    if (id === activeTaskId) {
+      if (newPaused) {
+        stopTimer();
+      } else {
+        lastTickTimeRef.current = Date.now();
+        startTimer();
+      }
+    }
+  }, [tasks, activeTaskId, stopTimer, startTimer]);
 
   const completeTask = useCallback((id: string, victoryNote: string = '') => {
     setTasks((prevTasks) =>
@@ -177,37 +186,37 @@ const App: React.FC = () => {
             <div className="glass-soft rounded-3xl p-8 fade-in-up">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
-                  style={{ background: 'linear-gradient(135deg, #ff9a9e, #fecfef)' }}>
+                  style={{ background: 'linear-gradient(135deg, #16a34a, #1e293b)' }}>
                   <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">
-                  TaskTimer Zen
+                <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-green-400 via-emerald-600 to-gray-900 bg-clip-text text-transparent">
+                  TaskTimer Slayer
                 </h1>
-                <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-                  A vibrant space to track and celebrate your progress
+                <p className="text-xl text-gray-200 max-w-2xl mx-auto">
+                  Forge your Nichirin and conquer your to-do demons
                 </p>
               </div>
-
+            
             {/* Task Creation */}
             <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
                 <div className="md:col-span-7">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    What beautiful thing will you create?
+                  <label className="block text-sm font-semibold text-gray-200 mb-3">
+                    What demon will you slay?
                   </label>
                   <input
                     id="task-input"
                     type="text"
-                    placeholder="Design the perfect interface..."
+                    placeholder="Track down the next foe..."
                     value={titleInput}
                     onChange={(e) => setTitleInput(e.target.value)}
                     className="input-soft w-full"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  <label className="block text-sm font-semibold text-gray-200 mb-3">
                     Focus time
                   </label>
                   <input
@@ -224,7 +233,7 @@ const App: React.FC = () => {
                     onClick={addTask}
                     className="btn-soft btn-primary w-full"
                   >
-                    ✨ Begin Journey
+                    ⚔️ Begin Hunt
                   </button>
                 </div>
               </div>
@@ -239,22 +248,22 @@ const App: React.FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div className="space-y-2">
                   <div className="text-4xl font-black text-purple-600">{tasks.length}</div>
-                  <div className="text-sm font-medium text-gray-600">Total Dreams</div>
+                  <div className="text-sm font-medium text-gray-300">Total Missions</div>
                   <div className="status-dot status-pending mx-auto"></div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl font-black text-green-500">{completedTasks}</div>
-                  <div className="text-sm font-medium text-gray-600">Achieved</div>
+                  <div className="text-sm font-medium text-gray-300">Slain</div>
                   <div className="status-dot status-done mx-auto"></div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl font-black text-blue-500">{activeTasks}</div>
-                  <div className="text-sm font-medium text-gray-600">In Flow</div>
+                  <div className="text-sm font-medium text-gray-300">Engaged</div>
                   <div className="status-dot status-active mx-auto"></div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl font-black text-red-400">{failedTasks}</div>
-                  <div className="text-sm font-medium text-gray-600">Learning</div>
+                  <div className="text-sm font-medium text-gray-300">Retreated</div>
                   <div className="status-dot status-failed mx-auto"></div>
                 </div>
               </div>
@@ -268,14 +277,14 @@ const App: React.FC = () => {
             <div className="text-center py-20">
               <div className="glass-card rounded-3xl p-16 max-w-2xl mx-auto fade-in-up">
                 <div className="w-32 h-32 mx-auto mb-8 rounded-full flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #a8edea, #fed6e3)' }}>
+                  style={{ background: 'linear-gradient(135deg, #16a34a, #dc2626)' }}>
                   <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <h3 className="text-3xl font-bold mb-4 text-gray-800">Ready to Flow?</h3>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Create your first beautiful task and enter the zone of pure productivity
+                <h3 className="text-3xl font-bold mb-4 text-gray-100">Ready to Hunt?</h3>
+                <p className="text-xl text-gray-300 leading-relaxed">
+                  Forge your first mission and join the Corps
                 </p>
               </div>
             </div>
