@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Global theme */
+:root {
+  --ring-trail: rgba(255, 255, 255, .15);
+}
+
+html,
+body,
+#root {
+  height: 100%
+}
+
+body {
+  @apply text-ink bg-bg overflow-x-hidden;
+}
+
+
+/* Aurora background */
+.bg-aurora {
+  position: fixed;
+  inset: -10% -10% auto -10%;
+  height: 80vh;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 900px at 18% 10%, #14275b 0%, transparent 60%),
+    radial-gradient(900px 700px at 80% 5%, #0e58a7 0%, transparent 60%),
+    linear-gradient(180deg, #0b1230, #070a14 60%);
+  filter: saturate(1.05) contrast(1.1);
+}
+
+
+/***** Glass helpers *****/
+.glass {
+  @apply bg-white/10 border border-white/15 shadow-glass backdrop-blur-md;
+}
+
+.glass-soft {
+  @apply bg-white/5 border border-white/10 shadow-glass backdrop-blur-sm;
+}
+
+
+/***** Focus mode *****/
+.focus-only .card {
+  opacity: .12;
+  pointer-events: none
+}
+
+.focus-only .card.focused {
+  opacity: 1;
+  pointer-events: auto
+}
