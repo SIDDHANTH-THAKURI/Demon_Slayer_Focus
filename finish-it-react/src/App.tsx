@@ -119,6 +119,16 @@ const App: React.FC = () => {
     if (confettiRef.current) {
       confettiRef.current(window.innerWidth / 2, window.innerHeight / 2);
     }
+
+    // Add celebration effect
+    const taskElement = document.querySelector(`[data-task-id="${id}"]`);
+    if (taskElement) {
+      taskElement.classList.add('success-burst');
+      setTimeout(() => {
+        taskElement.classList.remove('success-burst');
+      }, 1000);
+    }
+
     setActiveId(null);
     stopTimer();
   }, [stopTimer]);
@@ -175,135 +185,232 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [focusMode]);
 
-  // Audio control (placeholder)
-  // useEffect(() => {
-  //   initAudio();
-  // }, []);
-
-  // useEffect(() => {
-  //   setAudio(audioOn);
-  // }, [audioOn]);
-
   return (
-    <div className="min-h-screen bg-bg text-ink flex flex-col items-center p-4">
-      {/* Header */}
-      <header className="text-4xl font-extrabold mb-8 text-accent">
-        Finish-It!
-      </header>
-
-      {/* Commit Panel */}
-      <div className="w-full max-w-md bg-gray-800 p-6 rounded-xl2 shadow-glass mb-8">
-        <h2 className="text-2xl font-bold mb-4">Commit to a Task</h2>
-        <div className="flex flex-col space-y-4">
-          <input
-            id="task-title-input"
-            type="text"
-            placeholder="I will finish... (e.g., Code the new API endpoint)"
-            value={titleInput}
-            onChange={(e) => setTitleInput(e.target.value)}
-            className="p-3 rounded-lg bg-gray-700 text-ink focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-          <input
-            type="number"
-            placeholder="in minutes (e.g., 25)"
-            value={minutesInput}
-            onChange={(e) => setMinutesInput(e.target.value)}
-            className="p-3 rounded-lg bg-gray-700 text-ink focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-          <button
-            onClick={addTask}
-            className="bg-accent hover:bg-accent2 focus:ring-accent text-[#061022] font-extrabold p-3 rounded-lg shadow-md transition-colors"
-          >
-            Commit to Task
-          </button>
-        </div>
+    <div className="min-h-screen bg-cyberpunk text-ink relative overflow-hidden">
+      {/* Neon grid overlay */}
+      <div className="grid-overlay"></div>
+      
+      {/* Floating neon particles */}
+      <div className="neon-particles">
+        {[...Array(15)].map((_, i) => {
+          const colors = ['green', 'pink', 'cyan'];
+          const color = colors[i % 3];
+          return (
+            <div
+              key={i}
+              className={`neon-particle ${color}`}
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 15}s`,
+                animationDuration: `${10 + Math.random() * 10}s`
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Task List */}
-      <div className="w-full max-w-md">
-        {tasks.length === 0 ? (
-          <p className="text-muted text-center">No tasks yet. Commit to one!</p>
-        ) : (
-          tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onStart={startTask}
-              onDone={completeTask}
-              onGiveUp={giveUpTask}
-              onTogglePause={togglePause}
-              isActive={task.id === activeTaskId}
-            />
-          ))
-        )}
-      </div>
+      <div className="relative z-10 flex flex-col items-center p-6 max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="text-center mb-16 fade-in">
+          <h1 className="glitch text-6xl md:text-8xl font-black mb-6" data-text="FINISH-IT">
+            FINISH-IT
+          </h1>
+          <div className="flex items-center justify-center space-x-4 text-lg">
+            <span className="text-accent">◉</span>
+            <span className="text-muted font-mono uppercase tracking-wider">CYBERPUNK PRODUCTIVITY ARENA</span>
+            <span className="text-accent2">◉</span>
+          </div>
+        </header>
 
-      {/* Settings/Global Controls */}
-      <div className="w-full max-w-md bg-gray-800 p-6 rounded-xl2 shadow-glass mt-8">
-        <h2 className="text-2xl font-bold mb-4">Session Controls</h2>
-        <div className="flex flex-col space-y-4">
-          <label className="flex items-center space-x-2 text-ink">
-            <input
-              type="checkbox"
-              checked={focusMode}
-              onChange={() => setFocusMode(!focusMode)}
-              className="form-checkbox h-5 w-5 text-accent rounded"
-            />
-            <span>Focus Mode (Hide all except active task)</span>
-          </label>
-          <label className="flex items-center space-x-2 text-ink">
-            <input
-              type="checkbox"
-              checked={chaosMode}
-              onChange={() => setChaosMode(!chaosMode)}
-              className="form-checkbox h-5 w-5 text-accent rounded"
-            />
-            <span>Chaos Mode (Random events)</span>
-          </label>
-          <label className="flex items-center space-x-2 text-ink">
-            <input
-              type="checkbox"
-              checked={audioOn}
-              onChange={() => setAudioOn(!audioOn)}
-              className="form-checkbox h-5 w-5 text-accent rounded"
-            />
-            <span>Ambient Audio</span>
-          </label>
-          {/* Mercy and Stakes sliders can be added here */}
-          <button
-            onClick={resetSession}
-            className="bg-bad hover:bg-red-600 focus:ring-bad text-white font-extrabold p-3 rounded-lg shadow-md transition-colors"
-          >
-            New Session (Purge All)
-          </button>
-          <button
-            // onClick={generateSessionPoster}
-            className="bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 text-white font-extrabold p-3 rounded-lg shadow-md transition-colors"
-          >
-            Generate Session Poster (Placeholder)
-          </button>
+        {/* Main Content Grid */}
+        <div className="w-full grid grid-cols-1 xl:grid-cols-4 gap-8">
+          
+          {/* Left Column - Task Creation */}
+          <div className="xl:col-span-1 space-y-6">
+            {/* Mission Control Panel */}
+            <div className="neon-card p-8 fade-in">
+              <div className="flex items-center mb-6">
+                <div className="w-3 h-3 bg-accent rounded-full mr-3 neon-pulse"></div>
+                <h2 className="text-xl font-bold text-accent uppercase tracking-wider">NEW MISSION</h2>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-mono text-muted mb-2 uppercase">TARGET OBJECTIVE</label>
+                  <input
+                    id="task-title-input"
+                    type="text"
+                    placeholder="Enter mission parameters..."
+                    value={titleInput}
+                    onChange={(e) => setTitleInput(e.target.value)}
+                    className="neon-input w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-mono text-muted mb-2 uppercase">TIME ALLOCATION</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      placeholder="25"
+                      value={minutesInput}
+                      onChange={(e) => setMinutesInput(e.target.value)}
+                      className="neon-input w-full pr-16"
+                    />
+                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-accent text-sm font-mono">
+                      MIN
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={addTask}
+                  className="neon-btn neon-btn-primary w-full py-4 text-lg"
+                >
+                  ⚡ INITIALIZE MISSION
+                </button>
+              </div>
+            </div>
+
+            {/* System Controls */}
+            <div className="neon-card p-6 fade-in">
+              <h3 className="text-lg font-bold text-accent2 mb-4 uppercase tracking-wider flex items-center">
+                <span className="w-2 h-2 bg-accent2 rounded-full mr-2 neon-pulse"></span>
+                SYSTEM CONFIG
+              </h3>
+              <div className="space-y-4">
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={focusMode}
+                    onChange={() => setFocusMode(!focusMode)}
+                    className="w-5 h-5 rounded bg-black border-2 border-accent checked:bg-accent transition-all duration-300"
+                  />
+                  <span className="group-hover:text-accent transition-colors font-mono">🎯 FOCUS PROTOCOL</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={chaosMode}
+                    onChange={() => setChaosMode(!chaosMode)}
+                    className="w-5 h-5 rounded bg-black border-2 border-warning checked:bg-warning transition-all duration-300"
+                  />
+                  <span className="group-hover:text-warning transition-colors font-mono">⚡ CHAOS ENGINE</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={audioOn}
+                    onChange={() => setAudioOn(!audioOn)}
+                    className="w-5 h-5 rounded bg-black border-2 border-accent3 checked:bg-accent3 transition-all duration-300"
+                  />
+                  <span className="group-hover:text-accent3 transition-colors font-mono">🎵 NEURAL SYNC</span>
+                </label>
+              </div>
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={resetSession}
+                  className="neon-btn neon-btn-danger w-full py-3"
+                >
+                  🔥 SYSTEM PURGE
+                </button>
+                <button
+                  className="neon-btn neon-btn-secondary w-full py-3"
+                >
+                  📊 DATA EXPORT
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Mission Dashboard */}
+          <div className="xl:col-span-3">
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-accent uppercase tracking-wider flex items-center">
+                  <span className="w-3 h-3 bg-good rounded-full mr-3 neon-pulse"></span>
+                  ACTIVE MISSIONS
+                </h2>
+                <div className="flex items-center space-x-6 text-sm font-mono">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-good rounded-full neon-pulse"></div>
+                    <span className="text-good">{tasks.filter(t => t.status === 'done').length} COMPLETE</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-accent rounded-full neon-pulse"></div>
+                    <span className="text-accent">{tasks.filter(t => t.status === 'active').length} ACTIVE</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-muted rounded-full"></div>
+                    <span className="text-muted">{tasks.filter(t => t.status === 'pending').length} PENDING</span>
+                  </div>
+                </div>
+              </div>
+              
+              {tasks.length > 0 && (
+                <div className="neon-progress h-3 mb-6">
+                  <div 
+                    className="neon-progress-fill"
+                    style={{ 
+                      width: `${(tasks.filter(t => t.status === 'done').length / tasks.length) * 100}%` 
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {tasks.length === 0 ? (
+                <div className="lg:col-span-2 neon-card p-16 text-center fade-in">
+                  <div className="text-8xl mb-6">⚡</div>
+                  <h3 className="text-2xl font-bold text-accent mb-4 uppercase tracking-wider">SYSTEM READY</h3>
+                  <p className="text-muted font-mono">Initialize your first mission to begin neural synchronization</p>
+                </div>
+              ) : (
+                tasks.map((task, index) => (
+                  <div
+                    key={task.id}
+                    className="slide-up hover-glow"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                    data-task-id={task.id}
+                  >
+                    <TaskCard
+                      task={task}
+                      onStart={startTask}
+                      onDone={completeTask}
+                      onGiveUp={giveUpTask}
+                      onTogglePause={togglePause}
+                      isActive={task.id === activeTaskId}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Focus Mode Overlay */}
       {focusMode && activeTaskId && (
-        <div className="fixed inset-0 bg-bg bg-opacity-95 flex items-center justify-center z-50 p-4">
-          {tasks.filter(t => t.id === activeTaskId).map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onStart={startTask}
-              onDone={completeTask}
-              onGiveUp={giveUpTask}
-              onTogglePause={togglePause}
-              isActive={true} // Always active in focus mode
-            />
-          ))}
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-50 p-6">
+          <div className="max-w-4xl w-full">
+            {tasks.filter(t => t.id === activeTaskId).map(task => (
+              <div key={task.id} className="transform scale-110">
+                <TaskCard
+                  task={task}
+                  onStart={startTask}
+                  onDone={completeTask}
+                  onGiveUp={giveUpTask}
+                  onTogglePause={togglePause}
+                  isActive={true}
+                />
+              </div>
+            ))}
+          </div>
           <button
             onClick={() => setFocusMode(false)}
-            className="absolute top-4 right-4 bg-white/20 text-ink p-2 rounded-full"
+            className="absolute top-8 right-8 neon-btn neon-btn-secondary p-4 rounded-full"
           >
-            ESC to exit Focus Mode
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
       )}
