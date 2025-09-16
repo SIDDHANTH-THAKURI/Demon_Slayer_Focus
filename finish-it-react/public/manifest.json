@@ -1,0 +1,39 @@
+{
+  "name": "Demon Slayer Focus - Master Your Breathing Techniques",
+  "short_name": "Demon Slayer Focus",
+  "description": "Master your focus through the breathing techniques of the Demon Slayer Corps",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e40af",
+  "theme_color": "#1e40af",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "lifestyle", "utilities"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
