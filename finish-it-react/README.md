@@ -79,10 +79,10 @@ Progress through the official ranks:
 
 ```bash
 # Clone the repository
-git clone https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus.git
+git clone https://github.com/SIDDHANTH-THAKURI/Demon-Slayer-Focus.git
 
 # Navigate to project directory
-cd demon-slayer-focus
+cd Demon-Slayer-Focus
 
 # Install dependencies
 npm install
@@ -249,8 +249,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/SIDDHANTH-THAKURI/Demon-Slayer-Focus/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/SIDDHANTH-THAKURI/Demon-Slayer-Focus/discussions)
 - 📧 **Contact**: thakurisiddhanth3@gmail.com
 
 ---
@@ -261,7 +261,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 *"The blade that cuts demons is forged through focus and discipline"*
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/demon-slayer-focus?style=social)](https://github.com/yourusername/demon-slayer-focus)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/demon-slayer-focus?style=social)](https://github.com/yourusername/demon-slayer-focus)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/Demon-Slayer-Focus?style=social)](https://github.com/yourusername/Demon-Slayer-Focus)
+[![GitHub forks](https://img.shields.io/github/forks/yourusername/Demon-Slayer-Focus?style=social)](https://github.com/yourusername/Demon-Slayer-Focus)
 
 </div>
