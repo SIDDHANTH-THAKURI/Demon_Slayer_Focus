@@ -79,7 +79,7 @@ Progress through the official ranks:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/demon-slayer-focus.git
+git clone https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus.git
 
 # Navigate to project directory
 cd demon-slayer-focus
@@ -249,15 +249,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/demon-slayer-focus/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/yourusername/demon-slayer-focus/discussions)
-- 📧 **Contact**: your.email@example.com
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/SIDDHANTH-THAKURI/demon-slayer-focus/discussions)
+- 📧 **Contact**: thakurisiddhanth3@gmail.com
 
 ---
 
 <div align="center">
 
-**Made with ❤️ and ⚔️ by [Your Name]**
+**Made with ❤️ and ⚔️ by Siddhanth Thakuri**
 
 *"The blade that cuts demons is forged through focus and discipline"*
 
