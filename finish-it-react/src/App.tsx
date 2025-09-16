@@ -21,8 +21,7 @@ const App: React.FC = () => {
   const [completionParticles, setCompletionParticles] = useState<{ technique: BreathingTechnique; active: boolean } | null>(null);
 
   const nextTaskId = useRef(0);
-  const animationFrameRef = useRef<number | null>(null);
-  const lastTickTimeRef = useRef<number>(Date.now());
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const confettiRef = useRef<ReturnType<typeof mountConfetti> | null>(null);
   useEffect(() => {
@@ -79,64 +78,67 @@ const App: React.FC = () => {
     setUserStats(calculateUserStats());
   }, [tasks, calculateUserStats]);
 
-  // Timer functions
-  const stopTimer = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
+  // Simple timer using setInterval
+  const startTimer = useCallback(() => {
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
+    
+    timerRef.current = setInterval(() => {
+      setTasks((prevTasks) => {
+        let timerShouldStop = true; // Assume we should stop unless we find an active task
+        
+        const updatedTasks = prevTasks.map((task) => {
+          // Find any active, unpaused task (not just the specific activeTaskId)
+          if (task.status === 'active' && !task.paused) {
+            timerShouldStop = false; // We found an active task, keep timer running
+            const newRemainingTime = Math.max(0, task.remainingTime - 1000); // Subtract 1 second
+            
+            if (newRemainingTime === 0) {
+              // Task completed
+              timerShouldStop = true;
+              
+              setTimeout(() => {
+                if (confettiRef.current) {
+                  confettiRef.current(window.innerWidth / 2, window.innerHeight / 2);
+                }
+                setActiveId(null);
+              }, 0);
+              
+              return { 
+                ...task, 
+                remainingTime: 0, 
+                status: 'done' as const, 
+                paused: true,
+                completedAt: new Date(),
+                victoryNote: 'Time completed successfully!'
+              };
+            }
+            
+            return { ...task, remainingTime: newRemainingTime };
+          }
+          return task;
+        });
+        
+        // Stop timer if no active tasks or task completed
+        if (timerShouldStop && timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        
+        return updatedTasks;
+      });
+    }, 1000); // Update every second
   }, []);
 
-  const handleTimeUpdate = useCallback(() => {
-    const now = Date.now();
-    const delta = now - lastTickTimeRef.current;
-    lastTickTimeRef.current = now;
-
-    let shouldContinue = false;
-
-    setTasks((prevTasks) => {
-      const updatedTasks = prevTasks.map((task) => {
-        if (task.id === activeTaskId && task.status === 'active' && !task.paused) {
-          shouldContinue = true;
-          const newRemainingTime = Math.max(0, task.remainingTime - delta);
-          if (newRemainingTime === 0) {
-            // Task completed by time running out
-            setActiveId(null);
-            if (confettiRef.current) {
-              confettiRef.current(window.innerWidth / 2, window.innerHeight / 2);
-            }
-            return { 
-              ...task, 
-              remainingTime: 0, 
-              status: 'done' as const, 
-              paused: true,
-              completedAt: new Date(),
-              victoryNote: 'Time completed successfully!'
-            };
-          }
-          return { ...task, remainingTime: newRemainingTime };
-        }
-        return task;
-      });
-      
-      return updatedTasks;
-    });
-
-    // Continue animation loop only if there's an active task
-    if (shouldContinue) {
-      animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-    } else {
-      animationFrameRef.current = null;
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-  }, [activeTaskId]);
-
-  const startTimer = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    lastTickTimeRef.current = Date.now();
-    animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-  }, [handleTimeUpdate]);
+  }, []);
 
   // Task management functions
   const addTask = useCallback(() => {
@@ -182,43 +184,21 @@ const App: React.FC = () => {
         task.id === id ? { ...task, status: 'active' as const, paused: false } : task
       )
     );
-    // Force start timer immediately
-    setTimeout(() => {
-      lastTickTimeRef.current = Date.now();
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-    }, 0);
-  }, [handleTimeUpdate]);
+    // Timer will be started by the useEffect
+  }, []);
 
   const togglePause = useCallback((id: string) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === id) {
           const newPaused = !task.paused;
-          if (!newPaused) {
-            // Resuming - start timer
-            setTimeout(() => {
-              lastTickTimeRef.current = Date.now();
-              if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-              }
-              animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
-            }, 0);
-          } else {
-            // Pausing - stop timer
-            if (animationFrameRef.current) {
-              cancelAnimationFrame(animationFrameRef.current);
-              animationFrameRef.current = null;
-            }
-          }
           return { ...task, paused: newPaused };
         }
         return task;
       })
     );
-  }, [handleTimeUpdate]);
+    // Timer will be managed by the useEffect
+  }, []);
 
   const completeTask = useCallback((id: string, victoryNote: string = '') => {
     setTasks((prevTasks) => {
@@ -283,24 +263,23 @@ const App: React.FC = () => {
     
     if (activeTask && activeTask.status === 'active' && !activeTask.paused) {
       // Start timer if not already running
-      if (!animationFrameRef.current) {
-        lastTickTimeRef.current = Date.now();
-        animationFrameRef.current = requestAnimationFrame(handleTimeUpdate);
+      if (!timerRef.current) {
+        startTimer();
       }
     } else {
       // Stop timer if no active unpaused task
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     }
-  }, [activeTaskId, tasks, handleTimeUpdate]);
+  }, [activeTaskId, tasks, startTimer]);
 
   // Cleanup timer on unmount
   useEffect(() => {
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
       }
     };
   }, []);
