@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const [completionParticles, setCompletionParticles] = useState<{ technique: BreathingTechnique; active: boolean } | null>(null);
 
   const nextTaskId = useRef(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   const confettiRef = useRef<ReturnType<typeof mountConfetti> | null>(null);
   useEffect(() => {
@@ -86,7 +86,7 @@ const App: React.FC = () => {
       timerRef.current = null;
     }
     
-    timerRef.current = setInterval(() => {
+    timerRef.current = window.setInterval(() => {
       setTasks((prevTasks) => {
         let timerShouldStop = true; // Assume we should stop unless we find an active task
         
@@ -124,7 +124,7 @@ const App: React.FC = () => {
         
         // Stop timer if no active tasks or task completed
         if (timerShouldStop && timerRef.current) {
-          clearInterval(timerRef.current);
+          window.clearInterval(timerRef.current);
           timerRef.current = null;
         }
         
@@ -135,7 +135,7 @@ const App: React.FC = () => {
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
-      clearInterval(timerRef.current);
+      window.clearInterval(timerRef.current);
       timerRef.current = null;
     }
   }, []);
@@ -269,7 +269,7 @@ const App: React.FC = () => {
     } else {
       // Stop timer if no active unpaused task
       if (timerRef.current) {
-        clearInterval(timerRef.current);
+        window.clearInterval(timerRef.current);
         timerRef.current = null;
       }
     }
@@ -279,7 +279,7 @@ const App: React.FC = () => {
   useEffect(() => {
     return () => {
       if (timerRef.current) {
-        clearInterval(timerRef.current);
+        window.clearInterval(timerRef.current);
       }
     };
   }, []);
